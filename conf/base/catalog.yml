@@ -1,0 +1,36 @@
+
+
+### Raw input data
+
+train:
+  type: pandas.CSVDataset
+  filepath: data/01_raw/train.csv
+
+
+test:
+  type: pandas.CSVDataset
+  filepath: data/01_raw/test.csv
+
+
+sample_submission:
+  type: pandas.CSVDataset
+  filepath: data/01_raw/sample_submission.csv
+
+
+counterGeoLocations:
+  type: pandas.JSONDataset
+  filepath: data/01_raw/counterGeoLocations.json
+
+
+### Database storage
+
+ftwue_db:
+  type: ftwue.datasets.sqldatasets.FtwueDataset
+  table_names: ["weather", "foot_traffic", "geolocation"]
+  unique_columns: [
+    ["full_date"],
+    ["full_date", streetname], # or shall we just use the id which is combination of both?
+    ["counter_street_name"]
+  ]
+  save_args:
+    if_exists: replace
