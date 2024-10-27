@@ -36,6 +36,20 @@ def preprocess_geolocation(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+### Prep holidays
+ 
+def preprocess_holidays(x):
+    
+    # remove frist 4 digits from string in column Datum
+    x["Datum"] = x["Datum"].str[4:]
+    # rename Datum to date
+    x.rename(columns={"Datum": "date"}, inplace=True)
+    x.drop(columns=["Feiertag"], inplace=True)
+    x["date"] = pd.to_datetime(x["date"], dayfirst=True)
+    # change back to string:
+    x["date"] = x["date"].astype(str)
+    return x
+
 ### Prep main dataset
 
 
@@ -129,5 +143,5 @@ def preprocess_weather(data_all: pd.DataFrame) -> t.Tuple:
 #             cursor.close()
 #             conn.close()
 
-def update_database(weather, data_all, geolocation):
-    return weather, data_all, geolocation # logic handeled by dataset
+def update_database(*args):
+    return args # logic handeled by dataset

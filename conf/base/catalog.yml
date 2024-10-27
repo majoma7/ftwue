@@ -21,16 +21,61 @@ counterGeoLocations:
   type: pandas.JSONDataset
   filepath: data/01_raw/counterGeoLocations.json
 
+holidays:
+  type: pandas.ExcelDataset
+  filepath: data/01_raw/holidays.xlsx
+
 
 ### Database storage
 
 ftwue_db:
   type: ftwue.datasets.sqldatasets.FtwueDataset
-  table_names: ["weather", "foot_traffic", "geolocation"]
+  table_names: ["weather", "foot_traffic", "geolocation", "holidays"]
   unique_columns: [
     ["full_date"],
     ["full_date", streetname], # or shall we just use the id which is combination of both?
-    ["counter_street_name"]
+    ["counter_street_name"],
+    ["date"]
   ]
   save_args:
     if_exists: replace
+
+
+### Database loading
+
+ftwue_db_multi_series:
+  type: pandas.SQLQueryDataset
+  sql: |
+    SELECT 
+      foot_traffic.*, 
+      weather.temperature, 
+      weather.weather_condition 
+    FROM 
+      foot_traffic 
+    LEFT JOIN 
+      weather 
+    ON 
+      foot_traffic.full_date = weather.full_date;
+  credentials: postgres
+
+# ftwue_db_single_series:
+# TODO: make this to only fetch a single street/person_type combination
+ftwue_db_single_series:
+  type: pandas.SQLQueryDataset
+  sql: |
+    SELECT 
+      foot_traffic.*, 
+      weather.temperature, 
+      weather.weather_condition 
+    FROM 
+      foot_traffic 
+    LEFT JOIN 
+      weather 
+    ON 
+      foot_traffic.full_date = weather.full_date;
+  credentials: postgres
+
+ftwue_db_holidays:
+  type: pandas.SQLTableDataset
+  table_name: holidays
+  credentials: postgres
