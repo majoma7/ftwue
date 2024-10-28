@@ -8,7 +8,7 @@ from kedro.pipeline import Pipeline, node
 # from kedro.pipeline import Pipeline, pipeline, node
 
 
-from .nodes import preprocess_geolocation, preprocess_data_all, preprocess_weather, update_database, preprocess_holidays
+from .nodes import preprocess_geolocation, preprocess_data_all, preprocess_weather, update_database, preprocess_holidays, db_write_completion_node
 
 
 def create_pipeline(**kwargs) -> Pipeline:
@@ -46,6 +46,14 @@ def create_pipeline(**kwargs) -> Pipeline:
                 inputs= ["preprocessed_weather", "preprocessed_foot_traffic", "preprocessed_geolocation", "preprocessed_holidays"],
                 outputs= "ftwue_db",
                 name = "update_database_node",
-            )
+            ),
+
+            # this is a dummy node to signal the completion of the pipeline
+            node( 
+                func=db_write_completion_node,
+                inputs=None,
+                outputs="db_write_complete",
+                name="db_write_completion_node",
+            ),
         ]
     )

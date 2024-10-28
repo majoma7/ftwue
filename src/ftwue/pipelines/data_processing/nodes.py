@@ -5,6 +5,11 @@ generated using Kedro 0.19.9
 
 import pandas as pd
 
+def db_read_dependency_node(dummy_input):
+    # This node doesn't perform any operation.
+    # It ensures that reading happens after writing.
+    return None
+
 def add_engineered_datetime_features(df_data: pd.DataFrame, df_holidays: pd.DataFrame, ) -> pd.DataFrame:
     
     df_data["date"] = pd.to_datetime(df_data["full_date"]).dt.date
@@ -17,5 +22,7 @@ def add_engineered_datetime_features(df_data: pd.DataFrame, df_holidays: pd.Data
     df_data["calendar_week"] = pd.to_datetime(df_data["full_date"]).dt.isocalendar().week
     df_data["quarter"] = pd.to_datetime(df_data["full_date"]).dt.quarter
 
-    return ["temp"]
+    return df_data
+
+
     

@@ -62,7 +62,8 @@ class FtwueDataset(AbstractDataset):
         )
 
     def _load(self) -> str:
-        raise ValueError("This dataset type is write-only")
+        pass
+        # raise ValueError("This dataset type is write-only")
     
     
     def _save(self, data: str) -> None:
@@ -182,57 +183,57 @@ class FtwueDataset(AbstractDataset):
             return "TEXT"  # Default to TEXT for non-numeric columns
 
 
-class FtwueDatasetSingleSeries(AbstractDataset):
-    def __init__(self,
-                 table_names,
-                 unique_columns=None,
-                 load_args=None,
-                 save_args=None):
-        # conf_path = str(Path("ftwue") / settings.CONF_SOURCE)
-        conf_path = str(Path(settings.CONF_SOURCE))
-        conf_loader = OmegaConfigLoader(conf_source=conf_path)
-        self.table_names = table_names
-        self.db_credentials = conf_loader["credentials"]["postgres"]
-        self.load_args = load_args or {}
+# class FtwueDatasetSingleSeries(AbstractDataset):
+#     def __init__(self,
+#                  table_names,
+#                  unique_columns=None,
+#                  load_args=None,
+#                  save_args=None):
+#         # conf_path = str(Path("ftwue") / settings.CONF_SOURCE)
+#         conf_path = str(Path(settings.CONF_SOURCE))
+#         conf_loader = OmegaConfigLoader(conf_source=conf_path)
+#         self.table_names = table_names
+#         self.db_credentials = conf_loader["credentials"]["postgres"]
+#         self.load_args = load_args or {}
 
-    def _describe(self) -> Dict[str, Any]:
-        """Returns a dict that describes the attributes of the dataset."""
-        return dict(
-            table_names=self.table_names,
-        )
+#     def _describe(self) -> Dict[str, Any]:
+#         """Returns a dict that describes the attributes of the dataset."""
+#         return dict(
+#             table_names=self.table_names,
+#         )
 
-    def _load(self) -> pd.DataFrame:
-        """Fetches merged data from the 'foot_traffic' and 'weather' PostgreSQL tables using an SQL join."""
-        try:
-            # Connect to the database
-            with psycopg2.connect(self.db_credentials['con']) as conn:
-                with conn.cursor() as cursor:
-                    # Query the merged data using an SQL JOIN
-                    cursor.execute("""
-                        SELECT *
-                        FROM foot_traffic
-                        LEFT JOIN weather
-                        ON foot_traffic.full_date = weather.full_date;
-                    """)
+#     def _load(self) -> pd.DataFrame:
+#         """Fetches merged data from the 'foot_traffic' and 'weather' PostgreSQL tables using an SQL join."""
+#         try:
+#             # Connect to the database
+#             with psycopg2.connect(self.db_credentials['con']) as conn:
+#                 with conn.cursor() as cursor:
+#                     # Query the merged data using an SQL JOIN
+#                     cursor.execute("""
+#                         SELECT *
+#                         FROM foot_traffic
+#                         LEFT JOIN weather
+#                         ON foot_traffic.full_date = weather.full_date;
+#                     """)
                     
-                    # Fetch all rows from the joined query
-                    rows = cursor.fetchall()
+#                     # Fetch all rows from the joined query
+#                     rows = cursor.fetchall()
                     
-                    # Get column names from the cursor description
-                    columns = [desc[0] for desc in cursor.description]
+#                     # Get column names from the cursor description
+#                     columns = [desc[0] for desc in cursor.description]
                     
-                    # Create a DataFrame from the fetched data
-                    merged_df = pd.DataFrame(rows, columns=columns)
+#                     # Create a DataFrame from the fetched data
+#                     merged_df = pd.DataFrame(rows, columns=columns)
                     
-                    # Return the merged DataFrame
-                    return merged_df
+#                     # Return the merged DataFrame
+#                     return merged_df
 
-        except Exception as e:
-            print(f"Error loading or merging data from 'foot_traffic' and 'weather' tables: {e}")
-            raise
+#         except Exception as e:
+#             print(f"Error loading or merging data from 'foot_traffic' and 'weather' tables: {e}")
+#             raise
         
 
-        return data
+#         return data
 
-    def _save(self, data: str) -> None:
-        raise ValueError("This dataset type is read-only")
+#     def _save(self, data: str) -> None:
+#         raise ValueError("This dataset type is read-only")

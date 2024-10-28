@@ -20,10 +20,11 @@ def register_pipelines() -> Dict[str, Pipeline]:
     # pipelines = find_pipelines()
 
     prep_database_pipeline = create_prep_database_pipeline()
-    data_processing_pipeline = pipeline(
-        create_data_processing_pipeline(),
-        inputs = {"ftwue_db_multi_series": "ftwue_db"},
-    )
+    # data_processing_pipeline = pipeline(
+    #     create_data_processing_pipeline(),
+    #     inputs = {"ftwue_db_multi_series": "ftwue_db"},
+    # )
+    data_processing_pipeline = create_data_processing_pipeline()
 
     return{"__default__": Pipeline([]) + prep_database_pipeline + data_processing_pipeline,
             "prep_database": prep_database_pipeline,

@@ -124,24 +124,10 @@ def preprocess_weather(data_all: pd.DataFrame) -> t.Tuple:
     data_all = rm_weather_columns(data_all)
     return weather, data_all
 
-
-### Inserting data into the database
-
-# def update_database(weather, data_all, geolocation):
-#     db_credentials = get_db_credentials()
-
-#     try:
-#         conn = psycopg2.connect(db_credentials['con'])
-#         cursors = conn.cursor()
-
-
-#     except Exception as e:
-#         print(f"Error updating database: {e}")
-    
-#     finally:
-#         if conn:
-#             cursor.close()
-#             conn.close()
-
 def update_database(*args):
     return args # logic handeled by dataset
+
+def db_write_completion_node():
+    # This node doesn't perform any operation.
+    # It's used to create a dependency in the pipeline.
+    return None

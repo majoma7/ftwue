@@ -40,6 +40,9 @@ ftwue_db:
   save_args:
     if_exists: replace
 
+db_write_complete: # dummy dataset to link db write and db read
+  type: MemoryDataset
+
 
 ### Database loading
 
@@ -79,3 +82,5 @@ ftwue_db_holidays:
   type: pandas.SQLTableDataset
   table_name: holidays
   credentials: postgres
+
+
