@@ -41,7 +41,8 @@ ftwue_db:
     if_exists: replace
 
 db_write_complete: # dummy dataset to link db write and db read
-  type: MemoryDataset
+  type: json.JSONDataset
+  filepath: data/02_intermediate/db_write_complete.json
 
 
 ### Database loading

@@ -125,9 +125,4 @@ def preprocess_weather(data_all: pd.DataFrame) -> t.Tuple:
     return weather, data_all
 
 def update_database(*args):
-    return args # logic handeled by dataset
-
-def db_write_completion_node():
-    # This node doesn't perform any operation.
-    # It's used to create a dependency in the pipeline.
-    return None
+    return list(args), True # logic handeled by dataset
