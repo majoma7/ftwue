@@ -7,7 +7,13 @@ from kedro.pipeline.modular_pipeline import pipeline
 from kedro.pipeline import Pipeline, node
 # from kedro.pipeline import Pipeline, pipeline, node
 
-from .nodes import add_engineered_datetime_features, retrieve_dataset
+from .nodes import add_engineered_datetime_features, feature_processing
+from ...general_nodes import retrieve_dataset
+
+import os
+
+# print cwd
+print(os.getcwd())
 
 def create_pipeline(**kwargs) -> Pipeline:
     return pipeline([
@@ -21,7 +27,13 @@ def create_pipeline(**kwargs) -> Pipeline:
         node(
             func=add_engineered_datetime_features,
             inputs=["ftwue_db_multi_series_df", "ftwue_db_holidays_df"],
-            outputs="all_data",
+            outputs="combined_dataset_df",
             name="add_engineered_datetime_features_node",
         ),
+        node(
+            func=feature_processing,
+            inputs="combined_dataset_df",
+            outputs="combined_dataset",
+            name="feature_processing_node",
+        )
     ])

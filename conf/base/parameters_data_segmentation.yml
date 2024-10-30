@@ -1,0 +1,12 @@
+# This is a boilerplate parameters config generated for pipeline 'data_segmentation'
+# using Kedro 0.19.9.
+#
+# Documentation for this file format can be found in "Parameters"
+# Link: https://docs.kedro.org/en/0.19.9/configuration/parameters.html
+
+# Parameters for SQLQueryDataset node ftwue_db_single_series
+
+data_split:
+  split_name: no_val_split
+  val_start: 2024-09-16
+  test_start: 2024-09-16

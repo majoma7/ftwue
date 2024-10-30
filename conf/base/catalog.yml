@@ -30,12 +30,13 @@ holidays:
 
 ftwue_db:
   type: ftwue.datasets.sqldatasets.FtwueDataset
-  table_names: ["weather", "foot_traffic", "geolocation", "holidays"]
+  table_names: ["weather", "foot_traffic", "geolocation", "holidays", "segmentation_table"]
   unique_columns: [
     ["full_date"],
     ["full_date", streetname], # or shall we just use the id which is combination of both?
     ["counter_street_name"],
-    ["date"]
+    ["date"],
+    ["datapoint_id"]
   ]
   save_args:
     if_exists: replace
@@ -43,6 +44,22 @@ ftwue_db:
 db_write_complete: # dummy dataset to link db write and db read
   type: json.JSONDataset
   filepath: data/02_intermediate/db_write_complete.json
+
+
+### Datasplit storage
+
+ftwue_db_datasplit:
+  type: ftwue.datasets.sqldatasets.FtwueDataset
+  table_names: ["segmentation_table"]
+  unique_columns: [
+    ["datapoint_id"]
+  ]
+  save_args:
+    if_exists: replace
+
+db_write_split_complete: # dummy dataset to link db write and db read
+  type: json.JSONDataset
+  filepath: data/02_intermediate/db_write_split_complete.json
 
 
 ### Database loading
@@ -79,9 +96,47 @@ ftwue_db_single_series:
       foot_traffic.full_date = weather.full_date;
   credentials: postgres
 
+# ftwue datapoint IDs
+ftwue_db_datapoints:
+  type: pandas.SQLQueryDataset
+  sql: |
+    SELECT 
+      segmentation_table.datapoint_id,
+      foot_traffic.streetname,
+      foot_traffic.full_date
+    FROM 
+      segmentation_table
+    JOIN 
+      foot_traffic 
+    ON 
+      segmentation_table.datapoint_id = foot_traffic.row_id;
+  credentials: postgres
+
 ftwue_db_holidays:
   type: pandas.SQLTableDataset
   table_name: holidays
   credentials: postgres
+
+combined_dataset:
+  type: pandas.ParquetDataset
+  filepath: data/02_intermediate/combined_dataset.pq
+
+data_split:
+  type: pandas.SQLQueryDataset
+  sql: |
+    SELECT 
+      datapoint_id,
+      no_val_split AS split_column
+    FROM 
+      segmentation_table
+  credentials: postgres
+
+# outputs
+submission:
+  type: pandas.CSVDataset
+  filepath: data/07_model_output/submission.csv
+
+
+
 
 

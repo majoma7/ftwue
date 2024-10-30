@@ -8,7 +8,8 @@ from kedro.pipeline.modular_pipeline import pipeline
 
 from .pipelines.prep_database.pipeline  import create_pipeline as create_prep_database_pipeline
 from .pipelines.data_processing.pipeline import create_pipeline as create_data_processing_pipeline
-
+from .pipelines.data_segmentation.pipeline import create_pipeline as create_data_segmentation_pipeline
+from .pipelines.data_science.pipeline import create_pipeline as create_data_science_pipeline
 
 
 def register_pipelines() -> Dict[str, Pipeline]:
@@ -20,15 +21,21 @@ def register_pipelines() -> Dict[str, Pipeline]:
     # pipelines = find_pipelines()
 
     prep_database_pipeline = create_prep_database_pipeline()
-    # data_processing_pipeline = pipeline(
-    #     create_data_processing_pipeline(),
-    #     inputs = {"ftwue_db_multi_series": "ftwue_db"},
-    # )
+
     data_processing_pipeline = create_data_processing_pipeline()
 
-    return{"__default__": Pipeline([]) + prep_database_pipeline + data_processing_pipeline,
+    data_segmentation_pipeline = create_data_segmentation_pipeline()
+
+    data_science_pipeline = create_data_science_pipeline()
+
+
+
+    return{"__default__": Pipeline([]) + prep_database_pipeline + data_processing_pipeline + data_segmentation_pipeline + data_science_pipeline,
             "prep_database": prep_database_pipeline,
-            "data_processing": data_processing_pipeline,}
+            "data_processing": data_processing_pipeline,
+            "data_segmentation": data_segmentation_pipeline,
+            "data_science": data_science_pipeline
+            }
 
 
 

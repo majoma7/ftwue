@@ -27,7 +27,6 @@ def convert_to_json(series: pd.Series):
     series = series.apply(lambda x: json.dumps(x) if isinstance(x, dict) else x)
 
 
-
 def preprocess_geolocation(df: pd.DataFrame) -> pd.DataFrame:
     df["lat"] = split_geolocation(df["geo_point_2d"], "lat")
     df["lon"] = split_geolocation(df["geo_point_2d"], "lon")
@@ -100,9 +99,19 @@ def preprocess_data_all(train: pd.DataFrame, test: pd.DataFrame) -> pd.DataFrame
 
     return data_all
 
+### Create emtpy table for dataset_slit
+
+def create_segmentation_table(x):
+
+    # create empty df
+    segmentation_df = pd.DataFrame(columns=["datapoint_id"])
+    # add row_id from x
+    segmentation_df["datapoint_id"] = x["id"]
+
+    return segmentation_df
+
 
 ### Separate weather data
-
 
 def get_weather_df(x):
     return x[["full_date", "temperature", "weather_condition"]].copy()
